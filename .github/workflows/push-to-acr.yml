@@ -35,8 +35,9 @@ jobs:
       # 4️⃣ 打 tag 到你的 ACR 仓库
       - name: Tag image for ACR
         run: |
-          docker tag ghcr.io/hydro-dev/hydro:latest \
-            ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
+          docker tag ghcr.io/hydro-dev/hydro:5 \
+          ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
+
 
       # 5️⃣ 推送到 ACR
       - name: Push image to ACR
