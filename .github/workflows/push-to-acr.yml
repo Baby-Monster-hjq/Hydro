@@ -27,12 +27,15 @@ jobs:
 
       - name: Pull Hydro official image
         run: |
-          docker pull hydrooj/hydro:latest
+          docker pull ghcr.io/hydro-dev/hydro:latest
+
+
 
       - name: Tag image for ACR
         run: |
-          docker tag hydrooj/hydro:latest \
-            ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
+          docker tag ghcr.io/hydro-dev/hydro:latest \
+           ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
+
 
       - name: Push image to ACR
         run: |
