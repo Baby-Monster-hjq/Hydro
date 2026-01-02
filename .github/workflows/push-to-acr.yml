@@ -8,9 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 可选：检出仓库（其实不 build，只是规范）
       - name: Checkout repo (not strictly needed)
         uses: actions/checkout@v4
 
+      # 1️⃣ 登录阿里云 ACR（公网地址）
       - name: Login to ACR
         run: |
           echo "${{ secrets.ACR_PASSWORD }}" | docker login \
@@ -18,25 +20,25 @@ jobs:
             -u ${{ secrets.ACR_USERNAME }} \
             --password-stdin
 
-      - name: Login to Docker Hub
+      # 2️⃣ 登录 GHCR（必须，否则 pull 会被 denied）
+      - name: Login to GHCR
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
-            -u ${{ secrets.DOCKERHUB_USERNAME }} \
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+            -u ${{ github.actor }} \
             --password-stdin
 
-
+      # 3️⃣ 拉取 Hydro 官方镜像（GHCR）
       - name: Pull Hydro official image
         run: |
           docker pull ghcr.io/hydro-dev/hydro:latest
 
-
-
+      # 4️⃣ 打 tag 到你的 ACR 仓库
       - name: Tag image for ACR
         run: |
           docker tag ghcr.io/hydro-dev/hydro:latest \
-           ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
+            ${{ secrets.ACR_REGISTRY }}/hydro_oj/hydro_oj:latest
 
-
+      # 5️⃣ 推送到 ACR
       - name: Push image to ACR
         run: |
           docker push \
